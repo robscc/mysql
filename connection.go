@@ -10,6 +10,7 @@ package mysql
 
 import (
 	"database/sql/driver"
+	"fmt"
 	"io"
 	"net"
 	"strconv"
@@ -109,7 +110,7 @@ func (mc *mysqlConn) Close() (err error) {
 	if !mc.closed.IsSet() {
 		err = mc.writeCommandPacket(comQuit)
 	}
-	dbgLog.Print("conn ", mc, " close")
+	dbgLog.Print(fmt.Sprintf("conn %p close", mc))
 	mc.cleanup()
 
 	return
@@ -120,7 +121,7 @@ func (mc *mysqlConn) Close() (err error) {
 // is called before auth or on auth failure because MySQL will have already
 // closed the network connection.
 func (mc *mysqlConn) cleanup() {
-	dbgLog.Print("conn ", mc, " cleanup")
+	dbgLog.Print(fmt.Sprint("conn %p cleanup", mc))
 	if !mc.closed.TrySet(true) {
 		return
 	}
