@@ -40,6 +40,7 @@ var (
 )
 
 var errLog = Logger(log.New(os.Stderr, "[mysql] ", log.Ldate|log.Ltime|log.Lshortfile))
+var dbgLog = Logger(log.New(os.Stdout, "[mysql:dbg] ", log.Ldate|log.Ltime|log.Lshortfile))
 
 // Logger is used to log critical error messages.
 type Logger interface {
@@ -53,6 +54,7 @@ func SetLogger(logger Logger) error {
 		return errors.New("logger is nil")
 	}
 	errLog = logger
+	dbgLog = logger
 	return nil
 }
 

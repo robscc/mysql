@@ -101,12 +101,14 @@ func (d MySQLDriver) Open(dsn string) (driver.Conn, error) {
 	// Reading Handshake Initialization Packet
 	cipher, err := mc.readInitPacket()
 	if err != nil {
+		dbgLog.Print("handshake fail")
 		mc.cleanup()
 		return nil, err
 	}
 
 	// Send Client Authentication Packet
 	if err = mc.writeAuthPacket(cipher); err != nil {
+		dbgLog.Print("send auth fail")
 		mc.cleanup()
 		return nil, err
 	}
@@ -116,6 +118,7 @@ func (d MySQLDriver) Open(dsn string) (driver.Conn, error) {
 		// Authentication failed and MySQL has already closed the connection
 		// (https://dev.mysql.com/doc/internals/en/authentication-fails.html).
 		// Do not send COM_QUIT, just cleanup and return the error.
+		dbgLog.Print("handle auth fail")
 		mc.cleanup()
 		return nil, err
 	}
@@ -126,6 +129,7 @@ func (d MySQLDriver) Open(dsn string) (driver.Conn, error) {
 		// Get max allowed packet size
 		maxap, err := mc.getSystemVar("max_allowed_packet")
 		if err != nil {
+			dbgLog.Print("get max_allowed_packed fail")
 			mc.Close()
 			return nil, err
 		}
@@ -138,6 +142,7 @@ func (d MySQLDriver) Open(dsn string) (driver.Conn, error) {
 	// Handle DSN Params
 	err = mc.handleParams()
 	if err != nil {
+		dbgLog.Print("handle params fail")
 		mc.Close()
 		return nil, err
 	}

@@ -82,6 +82,7 @@ func (mc *mysqlConn) handleParams() (err error) {
 }
 
 func (mc *mysqlConn) markBadConn(err error) error {
+	errLog.Print(err)
 	if mc == nil {
 		return err
 	}
@@ -108,7 +109,7 @@ func (mc *mysqlConn) Close() (err error) {
 	if !mc.closed.IsSet() {
 		err = mc.writeCommandPacket(comQuit)
 	}
-
+	dbgLog.Print("conn ", mc, " close")
 	mc.cleanup()
 
 	return
@@ -119,6 +120,7 @@ func (mc *mysqlConn) Close() (err error) {
 // is called before auth or on auth failure because MySQL will have already
 // closed the network connection.
 func (mc *mysqlConn) cleanup() {
+	dbgLog.Print("conn ", mc, " cleanup")
 	if !mc.closed.TrySet(true) {
 		return
 	}
@@ -435,6 +437,7 @@ func (mc *mysqlConn) getSystemVar(name string) ([]byte, error) {
 // finish is called when the query has canceled.
 func (mc *mysqlConn) cancel(err error) {
 	mc.canceled.Set(err)
+	dbgLog.Print("conn cancel query")
 	mc.cleanup()
 }
 
