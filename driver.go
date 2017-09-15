@@ -53,6 +53,8 @@ func RegisterDial(net string, dial DialFunc) {
 func (d MySQLDriver) Open(dsn string) (driver.Conn, error) {
 	var err error
 
+	dbgLog.Print("open new conn ", dsn)
+
 	// New mysqlConn
 	mc := &mysqlConn{
 		maxAllowedPacket: maxPacketSize,
