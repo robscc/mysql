@@ -83,7 +83,7 @@ func (mc *mysqlConn) handleParams() (err error) {
 }
 
 func (mc *mysqlConn) markBadConn(err error) error {
-	errLog.Print(err)
+	errLog.Print("conn %p %s", mc, err)
 	if mc == nil {
 		return err
 	}
@@ -95,7 +95,7 @@ func (mc *mysqlConn) markBadConn(err error) error {
 
 func (mc *mysqlConn) Begin() (driver.Tx, error) {
 	if mc.closed.IsSet() {
-		errLog.Print(ErrInvalidConn)
+		errLog.Print("conn %p %s", mc, ErrInvalidConn)
 		return nil, driver.ErrBadConn
 	}
 	err := mc.exec("START TRANSACTION")

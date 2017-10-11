@@ -61,6 +61,7 @@ func (d MySQLDriver) Open(dsn string) (driver.Conn, error) {
 		maxWriteSize:     maxPacketSize - 1,
 		closech:          make(chan struct{}),
 	}
+	dbgLog.Print("open new conn %p", mc)
 	mc.cfg, err = ParseDSN(dsn)
 	if err != nil {
 		return nil, err
